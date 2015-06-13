@@ -131,7 +131,7 @@ class FiniteCache(Cache):
         self.keys_in_order = []
 
 
-def cacher(key_generator=None):
+def cacher(key_generator=None, get_cacher=lambda: FiniteCache(5)):
     """Decorator that wraps a class member function with caching capabilities.
 
     Parameters
@@ -139,13 +139,17 @@ def cacher(key_generator=None):
     key_generator : callable
         A callable that returns a string that describes the class' state at
         runtime.
+    get_cache : callable, optional
+        A callable to return an object with get(), set() and clear() methods.
+        Default to `lambda: FiniteCache(5)`. The callable approach is used to
+        ensure caches will be local to each decorated function.
     """
 
     if key_generator is None:
         raise ValueError("A key_generator callable must be given")
 
-    cache = FiniteCache(1)  # TODO: make this optional
-    cache_registry.append(cache)
+    cache = get_cacher()
+    cache_registry.append(cache)  # TODO: can we always do that? what a the requirements for this to work? is a common interface enough?
 
     def decorate(func):
         @wraps(func)
