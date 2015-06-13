@@ -11,7 +11,6 @@ needs to be made aware of all relevant state attributes.
 
 # TODO: testing concept?
 
-
 from functools import wraps
 
 cache_registry = []
@@ -131,38 +130,44 @@ class FiniteCache(Cache):
         self.keys_in_order = []
 
 
-def cacher(key_generator=None, get_cacher=lambda: FiniteCache(5)):
+def cacher(key_template=None, get_cacher=lambda: FiniteCache(5)):
     """Decorator that wraps a class member function with caching capabilities.
 
     Parameters
     ----------
-    key_generator : callable
-        A callable that returns a string that describes the class' state at
-        runtime.
+    key_template : string
+        A string that describes the class' state at runtime. The string needs
+        to be such that .format() could be called on it.
     get_cache : callable, optional
         A callable to return an object with get(), set() and clear() methods.
         Default to `lambda: FiniteCache(5)`. The callable approach is used to
         ensure caches will be local to each decorated function.
     """
 
-    if key_generator is None:
-        raise ValueError("A key_generator callable must be given")
+    if key_template is None:
+        raise ValueError("A key_template must be given")
 
     cache = get_cacher()
-    cache_registry.append(cache)  # TODO: can we always do that? what a the requirements for this to work? is a common interface enough?
+    cache_registry.append(cache)
+    # TODO: can we always do that? what a the requirements for this to work?
+    # is a common interface enough?
 
     def decorate(func):
+        func_name = func.__repr__()
+
         @wraps(func)
-        def wrapper(self, *args, **kwargs):
-            func_name = func.__repr__()
-            key = (func_name + "_"
-                   + key_generator(self, *args, **kwargs).format(self=self,
-                                                                 *args, **kwargs)
-                   )
+        def wrapper(*args, **kwargs):
+            # bare-metal convert all positional arguments to keyword arguments:
+            kwargs.update(dict(zip(func.func_code.co_varnames, args)))
+
+            key = (func_name + "_"  # make cacher aware of function name
+                   + key_template.format(**kwargs)  # evaluate key
+                  )
             try:
                 ret = cache.get(key)
             except NotInCacheError:
-                ret = func(self, *args, **kwargs)
+                ret = func(**kwargs)
+                # TODO: call like that or use previously generated copy of kwargs together with args?
                 cache.set(key, ret)
 
             return ret
