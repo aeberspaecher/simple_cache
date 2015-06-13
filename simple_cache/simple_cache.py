@@ -171,7 +171,7 @@ def cacher(key_generator=None):
     return decorate
 
 
-def clear_all_caches():
+def clear_all_registered_caches():
     """Clear all caches registered.
     """
 
