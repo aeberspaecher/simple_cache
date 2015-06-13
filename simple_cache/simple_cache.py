@@ -58,7 +58,7 @@ class Cache(object):
 
         raise NotImplementedError()
 
-    # TODO: is it reasonable to add a keys member, a delete() function
+    # TODO: is it reasonable to add a keys member, a delete() function?
 
 
 class FiniteCache(Cache):
@@ -113,18 +113,13 @@ class FiniteCache(Cache):
 
         self.keys_in_order.append(key)
         self.cache[key] = value
-        #print("Caching new key: {}".format(key))
-        #print("\tAvailable keys {}; cache {}".format(self.keys_in_order, self.cache))
 
         # if cache has grown too big (i.e. has too many cached items): clean
         # out oldest cached item
         if len(self.cache) > self.max_size:
             oldest_key = self.keys_in_order[0]  # first item is oldest key
-            #print("Keys of cache dict: {}".format(self.cache.keys()))
-            #print("Keys in key list: {}".format(self.keys_in_order))
             self.cache.pop(oldest_key)
             self.keys_in_order.pop(0)
-            #print("Cleaning out old key: {}".format(oldest_key))
 
     def clear(self):
         """Clean out all cached items.
@@ -177,6 +172,5 @@ def clear_all_registered_caches():
     """Clear all caches registered.
     """
 
-    #print("Now cleaning all caches!")
     for cache in cache_registry:
         cache.clear()
