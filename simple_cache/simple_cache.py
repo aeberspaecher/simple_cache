@@ -40,7 +40,7 @@ class Cache(object):
         NotInCacheError
             In case key does not exist in cache.
         """
-        return NotImplementedError
+        raise NotImplementedError()
 
     def set(self, key, value):
         """Set a key/value pair in cache.
@@ -50,13 +50,15 @@ class Cache(object):
         key : string
         value : object
         """
-        return NotImplementedError
+        raise NotImplementedError()
 
     def clean(self):
         """Clean out all cached items.
         """
 
-        return NotImplementedError
+        raise NotImplementedError()
+
+    # TODO: is it reasonable to add a keys member, a delete() function
 
 
 class FiniteCache(Cache):
