@@ -57,6 +57,13 @@ class Cache(object):
 
         raise NotImplementedError()
 
+    @property
+    def keys(self):
+        """Keys stored.
+        """
+
+        raise NotImplementedError()
+
     # TODO: is it reasonable to add a keys member, a delete() function?
 
 
@@ -128,6 +135,10 @@ class FiniteCache(Cache):
         for key in self.keys_in_order:
             del key
         self.keys_in_order = []
+
+    @property
+    def keys(self):
+        return self.cache.keys()
 
 
 def cacher(key_template=None, get_cacher=lambda: FiniteCache(5)):
