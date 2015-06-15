@@ -11,6 +11,10 @@ needs to be made aware of all relevant state attributes.
 
 # TODO: testing concept?
 
+# TODO: for caches, rather use __getitem__() etc?
+# this could allow to make all interface-specifics disappear and could finally
+# allow to use a simple dict as a cache.
+
 from functools import wraps
 
 cache_registry = []

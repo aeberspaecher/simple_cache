@@ -74,6 +74,9 @@ To use larger ``FiniteCache``, decorate e.g. with:
 
     @simple_cache.cache(key_template=...,  get_cacher=simple_cache.FiniteCache(10))
 
+Please note that the caches for a specific class member function are shared
+between all instances of the containing class.
+
 License and copyright
 ---------------------
 
