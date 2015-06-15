@@ -77,6 +77,19 @@ To use larger ``FiniteCache``, decorate e.g. with:
 Please note that the caches for a specific class member function are shared
 between all instances of the containing class.
 
+On types and keys
+-----------------
+
+The keys used in caching are strings. Thus the keys would typically use a
+string representation of the context. Please note that in that sense, a
+function argument ``x`` used as ``{x}`` in the key may evaluate identical keys
+for the NumPy array ``numpy.array([2])`` and the list ``[2]`` (or even simpler,
+for the int 2 and the float 2.0), although the function might evaluate to
+something different (think e.g. of a function that returns 2*x, which is
+different for arrays and lists). It is entirely the user's resonsibility to
+recognize such cases and add additional information to the key (such as e.g.
+``type(x)``).
+
 License and copyright
 ---------------------
 
