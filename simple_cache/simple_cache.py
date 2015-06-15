@@ -51,7 +51,7 @@ class Cache(object):
         """
         raise NotImplementedError()
 
-    def clean(self):
+    def clear(self):
         """Clean out all cached items.
         """
 
