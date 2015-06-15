@@ -10,7 +10,7 @@ Sometimes, class member functions may be expensive to call. It may happen that
 e.g. during interactive numerical work, the same function is called under
 identical conditions more than only once. In that case, it is desirable that
 the function's result comes from a cache instead from an expensive
-recomputation. However, the cache needs to be aware of the object's state.
+re-computation. However, the cache needs to be aware of the object's state.
 That's what ``simple_cache`` is written for.
 
 This work is heavily inspried by Steven Fernandez' `SuPyCache
@@ -51,9 +51,13 @@ The basic idea is the same as in `SuPyCache
 <https://github.com/lonetwin/supycache>`_: on runtime, the decorator calls
 ``.format(**kwargs)`` on the key and thus allows to evaluate both the class'
 state and the function's argument on runtime. All positional ``args`` are
-converted to keyword arguments before that. The key produced in that way is
-then used with the cache to retrieve cached results; if the key is not
-presented, the function is called and the result will be stored for later use.
+converted to keyword arguments before that. This allows the user to refer to
+e.g. ``f(x)`` argument as ``{x}`` instead of the positional-argument variant
+``{0}`` which would be necessary in calls such as ``f(2)``.
+
+The key produced in this way is then used with the cache to retrieve cached
+results; if the key is not present, the function is called and the result will
+be stored for later use.
 
 What about caches?
 ------------------
@@ -73,6 +77,6 @@ To use larger ``FiniteCache``, decorate e.g. with:
 License and copyright
 ---------------------
 
-Copyright 2015 Alexander Eberspächer
+Copyright 2015, Alexander Eberspächer
 
 BSD license, see LICENSE file
