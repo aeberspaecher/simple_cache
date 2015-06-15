@@ -164,21 +164,19 @@ def cacher(key_template=None, get_cacher=lambda: FiniteCache(5)):
     # is a common interface enough?
 
     def decorate(func):
-        func_name = func.__repr__()
-
         @wraps(func)
         def wrapper(*args, **kwargs):
             # bare-metal convert all positional arguments to keyword arguments:
+            # this allows to refer to positional arguments by name (as if they
+            # were keyword arguments). this is more convenient for the user in
+            # key creation.
             kwargs.update(dict(zip(func.func_code.co_varnames, args)))
-
-            key = (func_name + "_"  # make cacher aware of function name
-                   + key_template.format(**kwargs)  # evaluate key
-                  )
+            key = key_template.format(**kwargs)  # evaluate key
             try:
                 ret = cache.get(key)
             except NotInCacheError:
                 ret = func(**kwargs)
-                # TODO: call like that or use previously generated copy of kwargs together with args?
+                # TODO: call like that or use previously generated copy of kwargs together with args? are there any edge cases that do not work like that?
                 cache.set(key, ret)
 
             return ret
